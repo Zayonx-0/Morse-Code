@@ -3,6 +3,7 @@ from scipy.io import wavfile
 #sound = AudioSegment.from_mp3("./morse.mp3")
 #sound.export("./morse.wav", format="wav")
 samplerate, data = wavfile.read('./morse.wav')
+import math
 
 realdata = []
 
@@ -12,17 +13,18 @@ for i in data:
 
 def determineBeepTime(realdata):
     SupposedSilence = 0
-    SupposedFinalSilence = 0
-    Row = 0
+    SupposedFinalSilence = math.inf
 
     index = 0
     while abs(realdata[index]) < 500: # Skip 1er silence
         index += 1
-    
-    while index < len(realdata):
+
+    finaldata = FinalSilenceTime(realdata)
+    while index < finaldata:
         if abs(realdata[index]) > 500:
-            if SupposedFinalSilence < SupposedSilence:
+            if SupposedFinalSilence > SupposedSilence and SupposedSilence > 10:
                 SupposedFinalSilence = SupposedSilence
+                print(SupposedFinalSilence)
             SupposedSilence = 0
             index += 1
             continue
@@ -33,9 +35,8 @@ def determineBeepTime(realdata):
 
 def FinalSilenceTime(realdata):
     Analyze = realdata[::-1]
-    return Analyze
     for i in range(len(Analyze)):
         if abs(Analyze[i]) > 500:
-            return i
+            return len(realdata) - i
 
-print(FinalSilenceTime(realdata))
+print(determineBeepTime(realdata))
