@@ -10,6 +10,7 @@ realdata = []
 
 for i in data:
     realdata += [i]
+    print(i)
 
 def determineBeepTime(realdata):
     SupposedSilence = 0
@@ -39,4 +40,15 @@ def FinalSilenceTime(realdata):
         if abs(Analyze[i]) > 500:
             return len(realdata) - i
 
-print(determineBeepTime(realdata))
+BeepTime = determineBeepTime(realdata)
+
+
+# Si c'est inferieur à 500 pendant au moins 10 fois, c'est un silence.
+
+def Analyzer(BeepTime, realdata):
+    index = 0
+    row = 0
+    current = 0
+
+    while index < len(realdata):
+        realdata[index]
