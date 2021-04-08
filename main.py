@@ -6,30 +6,31 @@ Created on Thu Mar 18 11:53:36 2021
 @authors: Matteo
 """
 
-"""Il faut au préalable avoir installé ffmpeg sur la machine linux
-avec la commande sudo apt install ffmpeg"""
+"""Il faut installer ffmpeg au préalable sur la machine """
+
 
 import os 
 from scipy.io import wavfile
-#from pydub import AudioSegment
-#sound = AudioSegment.from_mp3("./morse.mp3")
-#sound.export("./morse.wav", format="wav")
 import math
 
 
-path='/home/user/Documents/NSI/Projet Morse/'
-nomfichier='audio2.mp3'
-nomsortie="sortie.wav"
+nomfichier=input('Entrez le nom du fichier : ')
+nomsortie=input("Entrez le nom de sortie : ")
 
-
-def conversionEnWav(path,nomFichier,nomDeSortie,affichertermine=True):
-    os.system(f"ffmpeg -i '{path}{nomFichier}' '{nomDeSortie}'")
-    if affichertermine:
-        print('conversion terminee')
+def conversionEnWav(nomFichier,nomDeSortie,affichertermine=True):
+    try:
+        commande="ffmpeg -i "+nomFichier+" "+nomDeSortie
+        print(commande)
+        os.system(commande)
+        if affichertermine:
+            print('conversion terminee')
+    except Exception:
+        print("Une erreur est survenue")
+        print(Exception)
     
-conversionEnWav(path,nomfichier,nomsortie)
+conversionEnWav(nomfichier,nomsortie)
 
-samplerate, data = wavfile.read(f'{path}{nomsortie}')
+samplerate, data = wavfile.read(nomsortie)
 
 
 realdata = []
@@ -91,12 +92,12 @@ BeepTime = determineBeepTime(realdata)# 676 dans cet exemple.
 # /..... = Espacement de deux lettres. 
 
 def test(realdata,samplerate,index):
-    print('y')
+    #print('y')
     var = 0
     try:
         var = realdata[index+(samplerate/1000)]
     except Exception:
-        print(Exception)
+        #print(Exception)
         return False
     counter = 0
     for i in range(index, index+samplerate/1000):

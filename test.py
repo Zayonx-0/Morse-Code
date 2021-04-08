@@ -8,6 +8,7 @@ import math
 realdata = []
 
 
+
 for i in data:
     realdata += [i]
 
