@@ -258,7 +258,7 @@ class StringTranslator:
 		return text
 
 if len(sys.argv) < 2:
-	print "Usage: " + sys.argv[0] + " soundfile.wav [--report[=pdf|=png]]"
+	print("Usage: " + sys.argv[0] + " soundfile.wav [--report[=pdf|=png]]")
 	sys.exit(1)
 
 plotter = DummyPlotter()
@@ -285,8 +285,8 @@ code_string = pul_translator.tostring(pulses)
 str_translator = StringTranslator()
 s = str_translator.totext(code_string)
 
-print code_string
-print s
+print(code_string)
+print(s)
 
 #####
 

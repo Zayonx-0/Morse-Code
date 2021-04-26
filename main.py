@@ -21,7 +21,7 @@ nomsortie=input("Entrez le nom de sortie : ")
 
 def conversionEnWav(nomFichier,nomDeSortie,affichertermine=True):
     try:
-        commande="ffmpeg -i "+nomFichier+" "+nomDeSortie
+        commande="ffmpeg -ac 1 -i "+nomFichier+" "+nomDeSortie
         print(commande)
         os.system(commande)
         if affichertermine:
