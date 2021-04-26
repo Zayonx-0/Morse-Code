@@ -6,7 +6,9 @@ Created on Thu Mar 18 11:53:36 2021
 @authors: Matteo
 """
 
-"""Il faut installer ffmpeg au préalable sur la machine """
+"""Il faut installer ffmpeg au préalable sur la machine
+et installer scipy : pip install scipy"""
+
 
 
 import os 
