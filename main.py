@@ -3,14 +3,11 @@
 """
 Created on Thu Mar 18 11:53:36 2021
 
-@authors: Matteo
 """
 
 """Il faut installer ffmpeg au préalable sur la machine
 et installer scipy : pip install scipy
 et pyaudio : pip install PyAudio"""
-
-
 
 import os 
 from scipy.io import wavfile
@@ -19,48 +16,16 @@ import pyaudio
 import numpy as np
 from scipy.io.wavfile import write
 
-Dic={'A':'.-',
-    'B':'-...',
-    'C':'-.-.',
-    'D':'-..',
-    'E':'.',
-    'F':'..-.',
-    'G':'--.',
-    'H':'....',
-    'I':'..',
-    'J':'.---',
-    'K':'-.-',
-    'L':'.-..',
-    'M':'--',
-    'N':'-.',
-    'O':'---',
-    'P':'.--.',
-    'Q':'--.-',
-    'R':'.-.',
-    'S':'...',
-    'T':'-',
-    'U':'..-',
-    'V':'...-',
-    'W':'.--',
-    'X':'-..-',
-    'Y':'-.--',
-    'Z':'--..',
-    '1':'.----',
-    '2':'..---',
-    '3':'...--',
-    '4':'....-',
-    '5':'.....',
-    '6':'-....',
-    '7':'--...',
-    '8':'---..',
-    '9':'----.',
-    '0':'-----'}
-nomfichier=input('Entrez le nom du fichier : ')
-nomsortie=input("Entrez le nom de sortie : ")
+Dic={'A':'.-','B':'-...','C':'-.-.','D':'-..','E':'.','F':'..-.','G':'--.',
+    'H':'....','I':'..','J':'.---','K':'-.-','L':'.-..','M':'--','N':'-.',
+    'O':'---','P':'.--.','Q':'--.-','R':'.-.','S':'...','T':'-','U':'..-',
+    'V':'...-','W':'.--','X':'-..-','Y':'-.--','Z':'--..','1':'.----',
+    '2':'..---','3':'...--','4':'....-','5':'.....','6':'-....','7':'--...',
+    '8':'---..','9':'----.','0':'-----'}
 
 def conversionEnWav(nomFichier,nomDeSortie,affichertermine=True):
     try:
-        commande="ffmpeg -ac 1 -i "+nomFichier+" "+nomDeSortie
+        commande="ffmpeg -ac 1 -i "+nomFichier+" "+nomDeSortie #-ac 1 pour prendre 1 seul channel audio 
         print(commande)
         os.system(commande)
         if affichertermine:
@@ -69,17 +34,6 @@ def conversionEnWav(nomFichier,nomDeSortie,affichertermine=True):
         print("Une erreur est survenue")
         print(Exception)
     
-conversionEnWav(nomfichier,nomsortie)
-
-samplerate, data = wavfile.read(nomsortie)
-
-
-realdata = []
-
-
-for i in data:
-    realdata += [i]
-
 def determineBeepTime(realdata):
     SupposedSilence = 0
     SupposedFinalSilence = math.inf
@@ -107,7 +61,6 @@ def FinalSilenceTime(realdata):
         if abs(Analyze[i]) > 500:
             return len(realdata) - i
 
-
 def CheckLastTen(index, realdata):
     current = abs(realdata[index])
     if current < 500:
@@ -124,8 +77,6 @@ def CheckLastTen(index, realdata):
                 return False
 
     return True # last 10 ARE the same ! It means that there are nothing worng here. (Like bit of err)
-
-BeepTime = determineBeepTime(realdata)# 676 dans cet exemple. 
 
 # But : reconnaitre un ., un - et reconnaitre 5 . d'espace, qui signale une autre lettre.
 # Creer un Array de type : ['.','-','.','-',''/.....]
@@ -173,10 +124,6 @@ def Analyzer(BeepTime, realdata):
         index += 1
     return Array, last
 
-result = Analyzer(BeepTime, realdata)
-NoiseTimes = result[0]
-NoiseNature = result[1]
-
 def translator(NoiseTimes, NoiseNature):
     translated = []
     for i in range(len(NoiseNature)):
@@ -196,7 +143,8 @@ def create(text,output):
     sample_rate = 11025
     frequency = 10000
     data=np.array([])
-    petit_temps=sample_rate//10
+    petit_temps=sample_rate//15
+    grave=math.pi/6 #rend le son plus grave
 
     for i in text:
         if i.upper() in Dic: #si il est dans le dictionnaire
@@ -205,13 +153,13 @@ def create(text,output):
                     print('.',end='')
                     #ajouter un point
                     for i in range(petit_temps):
-                        data=np.append(data,frequency*math.sin(i))
+                        data=np.append(data,frequency*math.sin(i*grave))
 
                 elif j=='-':
                     print('-',end='')
                     #ajouter un tiret
                     for i in range(3*petit_temps):
-                        data=np.append(data,frequency*math.sin(i))
+                        data=np.append(data,frequency*math.sin(i*grave))
                 for i in range(petit_temps):
                         data=np.append(data,0)
             print(' ',end='')
@@ -227,13 +175,68 @@ def create(text,output):
     data=np.asarray(data, dtype=np.int16)
     #for dtype=int16 ==> min : -32768 / max : 32767
     write(output, sample_rate, data.astype(np.int16))
-create('test','salut2.wav')
 
-toprint = ''
 
-done = translator(NoiseTimes, NoiseNature)
+def principal():
+    print(menu)
+    print(choix_possibles)
+    choix=int(input(">>>"))
+    if choix == 1 :
+        text_to_translate=input("Texte a transformer : ")
+        nom_fichier_sortie_a_creer=input("Nom du fichier de sortie (en .wav): ")
+        create(text_to_translate,nom_fichier_sortie_a_creer)
+    elif choix == 2 :
+        filename=input("Entrez le nom du fichier : ")
+        samplerate, data = wavfile.read(filename)
+        realdata = []
+        for i in data:
+            realdata += [i]
+        BeepTime = determineBeepTime(realdata)
+        result = Analyzer(BeepTime, realdata)
+        NoiseTimes = result[0]
+        NoiseNature = result[1]
+        toprint = ''
+        done = translator(NoiseTimes, NoiseNature)
+        for i in range(len(done)):
+            toprint += done[i]
+        print(toprint)
+    elif choix == 3 :
+        nomfichier=input('Entrez le nom du fichier : ')
+        nomsortie=input("Entrez le nom de sortie : ")
+        conversionEnWav(nomfichier,nomsortie)
+    elif choix==4:
+        nomfichier=input('Entrez le nom du fichier : ')
+        nomsortie=input("Entrez le nom de sortie : ")
+        conversionEnWav(nomfichier,nomsortie)
+        samplerate, data = wavfile.read(nomsortie)
+        realdata = []
+        for i in data:
+            realdata += [i]
+        BeepTime = determineBeepTime(realdata)
+        result = Analyzer(BeepTime, realdata)
+        NoiseTimes = result[0]
+        NoiseNature = result[1]
+        toprint = ''
+        done = translator(NoiseTimes, NoiseNature)
+        for i in range(len(done)):
+            toprint += done[i]
+        print(toprint)
+    elif choix==5:
+        print("Fin du programme")
+        exit()
+    else:
+        print("La valeur ne fait pas partie des choix merci de réessayer")
+        principal()
 
-for i in range(len(done)):
-    toprint += done[i]
 
-print(toprint)
+#####menu#####
+menu="""#################################################
+################ Morse Converter ################
+#################################################"""
+choix_possibles="""1-Text to Audio
+2-Audio to Text
+3-Convert file to .wav
+4-Convert to .wav and to Text
+5-Exit"""
+
+principal()
