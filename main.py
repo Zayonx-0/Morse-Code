@@ -140,11 +140,13 @@ def translator(NoiseTimes, NoiseNature):
     return translated
 
 def create(text,output):
+    if output[-4:]!='.wav':#si l'extension a été oubliée on la rajoute
+        output+='.wav'
     sample_rate = 11025
     frequency = 10000
     data=np.array([])
     petit_temps=sample_rate//15
-    grave=math.pi/6 #rend le son plus grave
+    grave=math.pi/10 #rend le son plus grave
 
     for i in text:
         if i.upper() in Dic: #si il est dans le dictionnaire
@@ -170,14 +172,13 @@ def create(text,output):
             #ajouter grand temps
             for i in range(4*petit_temps):#4 en plus des précédents soit 7 au total 
                         data=np.append(data,0)
-        
-    
     data=np.asarray(data, dtype=np.int16)
     #for dtype=int16 ==> min : -32768 / max : 32767
     write(output, sample_rate, data.astype(np.int16))
 
 
 def principal():
+    global samplerate,data,BeepTime
     print(menu)
     print(choix_possibles)
     choix=int(input(">>>"))
@@ -222,7 +223,7 @@ def principal():
             toprint += done[i]
         print(toprint)
     elif choix==5:
-        print("Fin du programme")
+        print(fin)
         exit()
     else:
         print("La valeur ne fait pas partie des choix merci de réessayer")
@@ -230,13 +231,18 @@ def principal():
 
 
 #####menu#####
-menu="""#################################################
-################ Morse Converter ################
-#################################################"""
+menu="""#################################################################
+######################## Morse Converter ########################
+#################################################################"""
 choix_possibles="""1-Text to Audio
-2-Audio to Text
+2-Audio to Text (if you have .wav file)
 3-Convert file to .wav
-4-Convert to .wav and to Text
+4-Convert to .wav and to Text (if you don't have .wav file)
 5-Exit"""
+fin="""##################################################################
+###################### End of communication ######################
+#. -. -..  --- ..-.  -.-. --- -- -- ..- -. .. -.-. .- - .. --- -.#
+##################################################################
+"""
 
 principal()
