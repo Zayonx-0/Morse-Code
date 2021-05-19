@@ -1,0 +1,58 @@
+bibliothèques necessaires : 
+    -os 
+    -scipy 
+    -math 
+    -pyaudio : pip install PyAudio 
+    -numpy
+
+il faudra également installer ffmpeg sur l'ordinateur
+(fonctionne sous tous les OS)
+
+
+Le dictionnaire Dic est une variable globale qui comprend les 
+valeurs en morse de chaque lettre de l'alphabet
+Un point correspond à un petit bip et un tiret à un long bip
+
+
+Partie de Matteo :
+
+ConversionEnWav(nomFichier,nomDeSortie,affichertermine=True)
+
+Prend en arguments le nom du fichier d'entrée, le nom du fichier de sortie, et si 
+on souhaite avoir un message lorsque la conversion est finie.
+
+fonctionnement : la variable commande est la commande qui utilise ffmpeg précédement installé
+avec les arguments -ac 1 pour n'avoir qu'un channel audio (pas de stéréo) et les noms 
+des fichiers. La fonction renvoie un message d'erreur si le nom du fichier fourni n'existe pas. 
+
+
+
+Create(text,output)
+
+Prend en arguments une variable text qui contient les caractères à traduire en morse,
+et le nom du fichier de sortie.
+
+le code :
+if output[-4:]!='.wav':
+        output+='.wav'
+permet de rajouter l'extension si elle a été oubliée dans le nom du fichier
+
+Selon les normes du morse un bip court représente 1 temps (c'est l'unité de base)
+un bip long représente 3 temps, entre chaque bip il y a 3 temps de silence,
+entre chaque lettre il y a 7 temps de silence.
+
+sample_rate représente le nombre de valeur par seconde (plus la valeur est elevé, 
+plus la qualité sonnore est elevée)
+
+petit_temps représente ici 1/15 de seconde, c'est la valeur d'un bip court (un temps)
+
+La variable grave permet de modifier la courbe sinusoidale pour rendre le son plus grave
+
+fonctionnement : on parcourt les caractères à traduire un par un, on récupère grace au dictionnaire
+la valeur en morse et on converti chaque temps en respectant les normes. 
+
+
+
+Principal()
+
+Mise en place d'un menu intercatif pour choisir les actions a réaliser
