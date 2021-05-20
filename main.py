@@ -246,3 +246,24 @@ fin="""##################################################################
 """
 
 principal()
+
+def seuil(realdata):#determiner le seuil a dépasser pour que le son fasse parti du bip
+    maxi,mini,moy=max(realdata),min(realdata),sum(realdata)/len(realdata)
+    print(maxi,mini,moy)
+    plus_petit_pos=min(abs(maxi),abs(mini))
+    milieu=(abs(moy)+plus_petit_pos)/2
+    seuil=milieu//2
+    print(plus_petit_pos,seuil)
+    return seuil
+    
+# filename='sortie.wav'
+# samplerate, data = wavfile.read(filename)
+# realdata = []
+# # file=open('data2.txt','w')
+# for i in data:
+#     # file.write(str(i)+'\n')
+#     realdata += [i]
+# # file.close()
+
+# print(samplerate,data)
+# seuil=seuil(realdata)
