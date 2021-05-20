@@ -234,10 +234,10 @@ def principal():
 menu="""#################################################################
 ######################## Morse Converter ########################
 #################################################################"""
-choix_possibles="""1-Text to Audio
-2-Audio to Text (if you have .wav file)
-3-Convert file to .wav
-4-Convert to .wav and to Text (if you don't have .wav file)
+choix_possibles="""1-Texts vers audio
+2-Audio vers texte (si le fichier est un .wav)
+3-Seulement convertir en .wav
+4-Convertir + audio vers texte (si le fichier n'est pas un .wav)
 5-Exit"""
 fin="""##################################################################
 ###################### End of communication ######################
