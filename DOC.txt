@@ -56,3 +56,57 @@ la valeur en morse et on converti chaque temps en respectant les normes.
 Principal()
 
 Mise en place d'un menu intercatif pour choisir les actions a réaliser
+
+Partie de Matyas :
+Conversion d'un fichier audio en texte
+
+Détail du code :
+
+Fonction most_frequent :
+Prend en argument une liste, qui est une liste dans laquelle à chaque échantillon de temps, est associé la fréquence à laquelle l'audio est le plus fort.
+Permet de voir quelle est la fréquence la plus utilisée dans le fichier audio.
+
+Fonction most_frequent2 :
+Idem que most_frequent, sauf que cette fonction renvoie la 2ème fréquence la plus utilisée. Celà permet notamment d'obtenir la fréquence des bips sonores, ainsi que la fréquence utilisée pour les silences.
+
+for t in range(len(times)):
+La fonction for ici permet de garder uniquement les fréquences auxquels l'audio est le plus fort pour chaque échantillon de temp. On garde aussi le spectre, qui est l'intensité audio. 
+Dans average, on stocke ici la moyenne de l'intensité audio sur tout le fichier. Permettant par la suite à comparer si l'intensité est plus fort que la moyenne, celà signifie que l'on se trouve dans un Bip (long ou court).
+
+Fonction LoudestFrequency :
+Cette fonction permet d'établir la fréquence à écouter, si c'est celle résultant de most_frequent ou de most_frequent 2, car la fréquence la plus utilisée peut être celle dans laquelle les silences s'y trouvent.
+
+Fonction DetermineBeepTime:
+Prend en argument une liste, dans laquelle ce trouve tout les temps pendant lesquels il y a des bruit, donc des bips et pendant lesquels il y a des silence. On cherche le temps le plus bas, qui représente donc un . dans le fichier audio. Si on ne peut pas faire celà à l'aide de la liste, on determine le temps du . en utilisant les échantillons de temps associés aux échantillons de fréquences, ce qui est au final moins précis et fiable que la première méthode, qui est privilégiée. 
+
+Fonction Translate :
+Cette fonction prend en argument les 2 fréquences les plus utilisés ainsi que la moyenne des intensités sonores. 
+most_frequent2 est ici la fréquence des silences et most_frequent la fréquence des sons. 
+La liste SortedFrequencies est utilisée dans cette fonction et est parcourue. Cette liste je le rappelle est celle qui contient toutes les fréquences associés à leurs temps, dans lequel l'intensité audio est le plus fort.
+Cette fonction permet de convertir les bips en une liste composée de sous liste, chaque sous liste représente soit un - soit un . soit un court silence ou long silence.
+Chaque sous liste a 2 élements, le premier est soit "Silence" soit "Noise" = bruit, et le deuxième est un floatn qui est le temps pendant lequel le silence ou le bruit se produit. On determine les "Noise" par le fait que le bruit soit au dessus de la moyenne ou par le fait que la fréquence actuellement analysée soit celle utilisée par les bips.
+
+Dans cette partie du code :
+
+if LoudestFrequencyResult[0] > LoudestFrequencyResult[1]:
+    firstdone = Translate(plusutilisee2,average,plusutilisee)
+else:
+    firstdone = Translate(plusutilisee,average,plusutilisee2)
+
+Je détermine quelle est la fréquence utilisée par les sons et celle par les silences, grâce à la sortie de LoudestFrequency qui détermine si la fréquence de most_frequent est celle utilisée par les silences ou si c'est celle de most_frequent2.
+Si c'est celle de most_frequent2, alors j'inverse les arguments de la fonction accordément. 
+
+Fontion FinalTranslate :
+Cette fonction prend en argument BeepTime, qui est le temps d'un beep determinée par la fonction DetermineBeepTime, et la liste TimeList, comprennant tout les temps des échantillons de temps. 
+Cette fonction convertit la liste composée de sous-listes en  .,- et _. (_ représente les espaces)
+On compare donc le temps des sous-listes, si le temps est supérieur à 2 bip et inférieur à 5 bip et que c'est un bruit, alors c'est un -
+Sinon si c'est un bruit, c'est un . .
+Si c'est un silence :
+Si le silence est strictemenet inférieur à 2 bips, alors c'est simplement un silence séparant les bips d'un même charactère
+Sinon si c'est supérieur à 5 bips, c'est un espace (un charactère espace)
+Sinon c'est que c'est la séparation de deux charactères.
+Cette fonction renvoie une liste composés de -,. et de _.
+
+Fonction normalizer :
+Cette fonction traduit simplement les -,. et _ en charactères alphanumériques, grâce au dictionnaire "morse".
+Elle renvoie une chaine de charactère.
